@@ -1,0 +1,2 @@
+class FrontEndUser < ApplicationRecord
+end
