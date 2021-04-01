@@ -1,5 +1,5 @@
 
-$( window ).on( "load", function() {
+$( "button" ).on( "click", function() {
     function showdata(users)
     {
         var user_data='';
