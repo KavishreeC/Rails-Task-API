@@ -1,5 +1,6 @@
 // /---------------------show data---------------------/
 $( window ).on( "load", function() {
+    token = sessionStorage.getItem('uniquetoken')
     function GetURLParameter(sParam)
         {
             var sPageURL = window.location.search.substring(1);
@@ -14,13 +15,19 @@ $( window ).on( "load", function() {
              }
         }
     var user_id = GetURLParameter('id');
-    console.log("succes",user_id);
+ 
+    // console.log("succes",user_id);
+    // console.log("token",t);
     view(user_id);
     function view(btn1)
     {
+       
+      
         btn=btn1;
         function showdata(temp)
         {
+            $("#div").removeClass("display2");
+            $("#div").addClass("display1");
             var show_data='';
             u=temp.data;
             id=u.id
@@ -32,7 +39,7 @@ $( window ).on( "load", function() {
             show_data += '<span>' +'<button type="button" class="btn btn-primary" id="editbtn" onclick="edit('+id+')" data-id="{{id}}"> Edit</button>  '+ '</span>'
             show_data += '<span>' +'<button type="button" class="btn btn-primary" id="backbtn" onclick="back()"> Back</button>'+ '</span>'
             show_data += '</ul>'
-            console.log("success",temp);
+            // console.log("success",temp);
             $('#showtable').append(show_data);
         }
         $.ajax
@@ -40,9 +47,22 @@ $( window ).on( "load", function() {
             type:"GET",    
             datatype: 'JSON',
             url: "http://localhost:3000/api/v1/users/"+$(this).attr("btn"),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": "Bearer "+token
+                },
             success:function (temp){
             showdata(temp);
+            },
+            error:
+            function()
+            {
+                
+                $("#show").removeClass("display2");
+                $("#show").addClass("display1");
             }
+           
         });
     }
 });
@@ -60,8 +80,10 @@ $( window ).on( "load", function() {
 function edit(id)
 {
    
+    token = sessionStorage.getItem('uniquetoken')
     $(".form").addClass("display2");
     userid=id;
+    
     $save=$(".savebtn");
     $cancel=$(".cancel");
     $cancel.html('<button type="button" class="btn btn-primary" onclick="cancel()">Cancel</button>');
@@ -71,10 +93,16 @@ function edit(id)
         type:"GET",    
         datatype: 'JSON',
         url: "http://localhost:3000/api/v1/users/"+$(this).attr("userid"),
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer "+token
+            },
         success:
         function (temp){
             editdata(temp);
-        }    
+        },
+        
     });
     function editdata(temp)
     {
@@ -94,7 +122,10 @@ function edit(id)
 
 function save(id)
 {
+    token = sessionStorage.getItem('uniquetoken')
     u_id=id;
+    
+    console.log("save",token)
     $form=$(".form")
     var user = 
     {
@@ -108,6 +139,10 @@ function save(id)
         type:"PUT",    
         datatype: 'JSON',
         url: "http://localhost:3000/api/v1/users/"+$(this).attr("u_id"),
+        headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer "+token
+            },
         data:user,
         success:
         function (temp){
